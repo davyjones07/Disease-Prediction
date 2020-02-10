@@ -1,6 +1,14 @@
 from tkinter import Tk,StringVar,Label,Entry,OptionMenu,Button,Text,END
 import numpy as np
 import pandas as pd
+from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+
+
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 symptoms_list=['back_pain','constipation','abdominal_pain','diarrhoea','mild_fever','yellow_urine',
 'yellowing_of_eyes','acute_liver_failure','fluid_overload','swelling_of_stomach',
@@ -18,7 +26,7 @@ symptoms_list=['back_pain','constipation','abdominal_pain','diarrhoea','mild_fev
 'abnormal_menstruation','dischromic _patches','watering_from_eyes','increased_appetite','polyuria','family_history','mucoid_sputum',
 'rusty_sputum','lack_of_concentration','visual_disturbances','receiving_blood_transfusion',
 'receiving_unsterile_injections','coma','stomach_bleeding','distention_of_abdomen',
-'history_of_alcohol_consumption','fluid_overload','blood_in_sputum','prominent_veins_on_calf',
+'history_of_alcohol_consumption','blood_in_sputum','prominent_veins_on_calf',
 'palpitations','painful_walking','pus_filled_pimples','blackheads','scurring','skin_peeling',
 'silver_like_dusting','small_dents_in_nails','inflammatory_nails','blister','red_sore_around_nose',
 'yellow_crust_ooze']
@@ -100,142 +108,149 @@ np.ravel(y_test)
 
 def DecisionTree():
 
-    from sklearn import tree
-
-    clf3 = tree.DecisionTreeClassifier()   
-    clf3 = clf3.fit(X,y)
-
-#    from sklearn.metrics import accuracy_score
-#    y_pred=clf3.predict(X_test)
-#    print(accuracy_score(y_test, y_pred))
-
-
-
-    psymptoms = [Symptom1.get(),Symptom2.get(),Symptom3.get(),Symptom4.get(),Symptom5.get()]
-
-    for k in range(0,len(symptoms_list)):
-        for z in psymptoms:
-            if(z==symptoms_list[k]):
-                symptoms_count_list[k]=1
-
-    inputtest = [symptoms_count_list]
-    predict = clf3.predict(inputtest)
-    predicted=predict[0]
-
-    h='no'
-    for a in range(0,len(disease)):
-        if(predicted == a):
-            h='yes'
-            break
-
-
-    if (h=='yes'):
+    if(Symptom1.get()=='Select Symptom'):
         t1.delete("1.0", END)
-        t1.insert(END, disease[a])
+        t1.insert(END, 'Select atleast 1 Symptom')
     else:
-        t1.delete("1.0", END)
-        t1.insert(END, "Not Found")
+        
 
-
-
+        clf3 = tree.DecisionTreeClassifier()   
+        clf3 = clf3.fit(X,y)
+        
+        psymptoms = [Symptom1.get(),Symptom2.get(),Symptom3.get(),Symptom4.get(),Symptom5.get()]
+    
+        for k in range(0,len(symptoms_list)):
+            for z in psymptoms:
+                if(z==symptoms_list[k]):
+                    symptoms_count_list[k]=1
+    
+        inputtest = [symptoms_count_list]
+        predict = clf3.predict(inputtest)
+        predicted=predict[0]
+    
+        h='no'
+        for a in range(0,len(disease)):
+            if(predicted == a):
+                h='yes'
+                break
+    
+        if (h=='yes'):
+            t1.delete("1.0", END)
+            t1.insert(END, disease[a])
+        else:
+            t1.delete("1.0", END)
+            t1.insert(END, "Not Found")
+    
+    
+    
 
 def randomforest():
     
-    from sklearn.ensemble import RandomForestClassifier
-    clf4 = RandomForestClassifier()
-    clf4 = clf4.fit(X,np.ravel(y))
-
-#    from sklearn.metrics import accuracy_score
-#    y_pred=clf4.predict(X_test)
-#    print(accuracy_score(y_test, y_pred))
-
-
-
-    psymptoms = [Symptom1.get(),Symptom2.get(),Symptom3.get(),Symptom4.get(),Symptom5.get()]
-
-    for k in range(0,len(symptoms_list)):
-        for z in psymptoms:
-            if(z==symptoms_list[k]):
-                symptoms_count_list[k]=1
-
-    inputtest = [symptoms_count_list]
-    predict = clf4.predict(inputtest)
-    predicted=predict[0]
-
-    h='no'
-    for a in range(0,len(disease)):
-        if(predicted == a):
-            h='yes'
-            break
-
-    if (h=='yes'):
-        t2.delete("1.0", END)
-        t2.insert(END, disease[a])
+    if(Symptom1.get()=='Select Symptom'):
+        t1.delete("1.0", END)
+        t1.insert(END, 'Select atleast 1 Symptom')
     else:
-        t2.delete("1.0", END)
-        t2.insert(END, "Not Found")
-
+        
+            
+        clf4 = RandomForestClassifier()
+        clf4 = clf4.fit(X,np.ravel(y))
+    
+    #    from sklearn.metrics import accuracy_score
+    #    y_pred=clf4.predict(X_test)
+    #    print(accuracy_score(y_test, y_pred))
+    
+    
+    
+        psymptoms = [Symptom1.get(),Symptom2.get(),Symptom3.get(),Symptom4.get(),Symptom5.get()]
+    
+        for k in range(0,len(symptoms_list)):
+            for z in psymptoms:
+                if(z==symptoms_list[k]):
+                    symptoms_count_list[k]=1
+    
+        inputtest = [symptoms_count_list]
+        predict = clf4.predict(inputtest)
+        predicted=predict[0]
+    
+        h='no'
+        for a in range(0,len(disease)):
+            if(predicted == a):
+                h='yes'
+                break
+    
+        if (h=='yes'):
+            t2.delete("1.0", END)
+            t2.insert(END, disease[a])
+        else:
+            t2.delete("1.0", END)
+            t2.insert(END, "Not Found")
+    
 
 def NaiveBayes():
-    from sklearn.naive_bayes import GaussianNB
-    gnb = GaussianNB()
-    gnb=gnb.fit(X,np.ravel(y))
-
-
-#    from sklearn.metrics import accuracy_score
-#    y_pred=gnb.predict(X_test)
-#    print(accuracy_score(y_test, y_pred))
-
-
-
-    psymptoms = [Symptom1.get(),Symptom2.get(),Symptom3.get(),Symptom4.get(),Symptom5.get()]
-    for k in range(0,len(symptoms_list)):
-        for z in psymptoms:
-            if(z==symptoms_list[k]):
-                symptoms_count_list[k]=1
-
-    inputtest = [symptoms_count_list]
-    predict = gnb.predict(inputtest)
-    predicted=predict[0]
-
-    h='no'
-    for a in range(0,len(disease)):
-        if(predicted == a):
-            h='yes'
-            break
-
-    if (h=='yes'):
-        t3.delete("1.0", END)
-        t3.insert(END, disease[a])
+    
+    if(Symptom1.get()=='Select Symptom'):
+        t1.delete("1.0", END)
+        t1.insert(END, 'Select atleast 1 Symptom')
     else:
-        t3.delete("1.0", END)
-        t3.insert(END, "Not Found")
-
-
-
+    
+        gnb = GaussianNB()
+        gnb=gnb.fit(X,np.ravel(y))
+    
+    
+    #    from sklearn.metrics import accuracy_score
+    #    y_pred=gnb.predict(X_test)
+    #    print(accuracy_score(y_test, y_pred))
+    
+    
+    
+        psymptoms = [Symptom1.get(),Symptom2.get(),Symptom3.get(),Symptom4.get(),Symptom5.get()]
+        for k in range(0,len(symptoms_list)):
+            for z in psymptoms:
+                if(z==symptoms_list[k]):
+                    symptoms_count_list[k]=1
+    
+        inputtest = [symptoms_count_list]
+        predict = gnb.predict(inputtest)
+        predicted=predict[0]
+    
+        h='no'
+        for a in range(0,len(disease)):
+            if(predicted == a):
+                h='yes'
+                break
+    
+        if (h=='yes'):
+            t3.delete("1.0", END)
+            t3.insert(END, disease[a])
+        else:
+            t3.delete("1.0", END)
+            t3.insert(END, "Not Found")
+    
+    
+    
 
 #--------------------------------------------------GRAPHICAL USER INTERFACE-------------------------------
 
 root = Tk()
 root.configure(background='black')
-
-root.title('DISEASE PREDICTOR.')
+root.geometry('1200x550')
+root.title('MACHINE LEARNING DISEASE PREDICTOR.')
 
 # entry variables
 Symptom1 = StringVar()
-Symptom1.set(None)
+Symptom1.set('Select Symptom')
 Symptom2 = StringVar()
-Symptom2.set(None)
+Symptom2.set('Select Symptom')
 Symptom3 = StringVar()
-Symptom3.set(None)
+Symptom3.set('Select Symptom')
 Symptom4 = StringVar()
-Symptom4.set(None)
+Symptom4.set('Select Symptom')
 Symptom5 = StringVar()
-Symptom5.set(None)
+Symptom5.set('Select Symptom')
 Name = StringVar()
 
 # Heading
-w2 = Label(root, text="MACHINE LEARNING DISEASE PREDICTOR", fg="white", bg="black")
+w2 = Label(root, text="A GENERAL DISEASE PREDICTOR", fg="white", bg="black")
 w2.config(font=("Arial", 20))
 w2.grid(row=1, column=0, columnspan=2,pady=50,padx=350)
 
@@ -260,13 +275,13 @@ S5Lb = Label(root, text="Symptom 5", fg="yellow", bg="black")
 S5Lb.grid(row=11, column=0, pady=10)
 
 
-lrLb = Label(root, text="DecisionTree", fg="white", bg="red")
+lrLb = Label(root, text="Decision Tree", fg="white", bg="red")
 lrLb.grid(row=15, column=0, pady=10)
 
-destreeLb = Label(root, text="RandomForest", fg="white", bg="red")
+destreeLb = Label(root, text="Random Forest", fg="white", bg="red")
 destreeLb.grid(row=17, column=0, pady=10)
 
-ranfLb = Label(root, text="NaiveBayes", fg="white", bg="red")
+ranfLb = Label(root, text="Naive Bayes", fg="white", bg="red")
 ranfLb.grid(row=19, column=0, pady=10)
 
 # entries
@@ -314,27 +329,71 @@ t3.grid(row=19, column=1 , padx=10)
 
 
 
-dst = Button(root, text="DecisionTree", command=DecisionTree,bg="green",fg="yellow")
+dst = Button(root, text="Decision Tree", command=DecisionTree,bg="green",fg="yellow")
 dst.grid(sticky="e",row=15, column=1)
 
-rnf = Button(root, text="Randomforest", command=randomforest,bg="green",fg="yellow")
+rnf = Button(root, text="Random Forest", command=randomforest,bg="green",fg="yellow")
 rnf.grid(sticky="e",row=17,column=1)
 
-lr = Button(root, text="NaiveBayes", command=NaiveBayes,bg="green",fg="yellow")
+lr = Button(root, text="Naive Bayes", command=NaiveBayes,bg="green",fg="yellow")
 lr.grid(sticky="e",row=19, column=1)
 
 
-
-##enter_button
-#enter_button = Button(root, text="Enter", bg='blue', fg='white')
-#enter_button.config(height = 2, width = 15)
-#enter_button.grid(row = 2, column = 0, sticky = 's')
-#
-##quit_button
-#quit_button = Button(root, text="Quit", bg="blue", fg="white")
-#quit_button.config(height = 2, width = 15)
-#quit_button.grid(row = 3, column = 0, sticky = 's')
-
-
-
 root.mainloop()
+
+
+
+#------------PLOTS---------------------#
+#
+#import seaborn as sns
+#sns.set(style="ticks", color_codes=True)
+#
+#g = sns.pairplot(df)
+#
+#
+#
+#############    COUNT PLOT OF DISEASE    ########################
+#from matplotlib import pyplot as plt
+#import seaborn as sns
+#
+#
+#dfd=pd.read_csv("Training.csv")
+#ddd=dfd.iloc[:,-1]
+#
+#a4_dims = (5, 20)
+#
+#fig, ax = plt.subplots(figsize=a4_dims)
+#ax = sns.countplot(y=ddd, data=df)
+#ax.set(title = 'COUNT PLOT OF DISEASES', xlabel='COUNT OF DISEASES', ylabel='DIFFERENT TYPES OF DISEASES')
+#
+#
+#
+#
+##################   COUNT PLOT SYMPTOMS        ##############################
+#
+#
+#dfsy=dfd.iloc[:,:-1]
+#
+#a4_dims = (5, 20)
+#
+##fig, ax = pyplot.subplots(figsize=a4_dims)
+#ax = sns.countplot(y=np.ravel(df[symptoms_list]), data=df)
+#ax.set(title = 'COUNT PLOT OF SYMPTOMS', xlabel='COUNT OF SYMPTOMS', ylabel='DIFFERENT TYPES OF DISEASES')
+#
+#
+#
+#
+#
+#
+#g = sns.pairplot(df[symptoms_list], hue="species")
+#
+#
+#
+#
+#
+#
+#
+#
+#df[symptoms_list].hist(bins=15, figsize=(100, 100));
+#
+#ax = sns.boxplot(data=df, orient="h", palette="Set2")
