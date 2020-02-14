@@ -1,3 +1,16 @@
+from time import strftime 
+
+
+def ctime(): 
+	string = strftime('%I:%M:%S %p') 
+	clock_label.config(text = string) 
+	clock_label.after(1000, ctime) 
+ctime() 
+
+
+
+
+
 '''   DATABASE OPERATIONS   '''
 
 
