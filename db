@@ -41,3 +41,24 @@ def save_reports():
     except sqlite3.DatabaseError as err:
             print(err)
             con.close() 
+
+
+
+
+
+
+
+    try:
+        cur.execute("""INSERT INTO DISEASE_PREDICTOR(NAME,AGE,GENDER,SYMPTOM_1,SYMPTOM_2,SYMPTOM_3,SYMPTOM_4,SYMPTOM_5,
+                    DECISION_TREE_PREDICTION,DECISION_TREE_ACCURACY,DECISION_TREE_TIME,
+                    NAIVE_BAYES_PREDICTION,NAIVE_BAYES_ACCURACY,NAIVE_BAYES_TIME,KNN_PREDICTION,KNN_ACCURACY,KNN_TIME ) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    (NAME,AGE,GENDER,SYMPTOM_1,SYMPTOM_2,SYMPTOM_3,SYMPTOM_4,SYMPTOM_5,DECISION_TREE_PREDICTION,DECISION_TREE_ACCURACY,
+                    DECISION_TREE_TIME,NAIVE_BAYES_PREDICTION,NAIVE_BAYES_ACCURACY,NAIVE_BAYES_TIME,KNN_PREDICTION,KNN_ACCURACY,KNN_TIME))
+        print ("RECORD ADDED SUCCESSFULLY !!!")
+        con.commit()
+        con.close() 
+        
+    except sqlite3.DatabaseError as err:
+            print(err)
+            con.close() 
