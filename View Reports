@@ -1,0 +1,108 @@
+
+import tkinter as tk
+import tkinter.font as tkFont
+import tkinter.ttk as ttk
+
+class McListBox(object):
+    
+    def __init__(self):
+        
+        self.tree = None
+        self._setup_widgets()
+        self._build_tree()
+        
+        
+    def _setup_widgets(self):
+        
+        s ="PREVIOUS PREDICTIONS BASED ON THE SYMPTOMS."
+        msg = ttk.Label(wraplength="4i", justify="left", anchor="n",
+            padding=(10, 2, 10, 6), text=s)
+        msg.pack(fill='x')
+        container = ttk.Frame()
+        container.pack(fill='both', expand=True)
+        self.tree = ttk.Treeview(columns=headers_list, show="headings")
+        vsb = ttk.Scrollbar(orient="vertical",
+            command=self.tree.yview)
+        hsb = ttk.Scrollbar(orient="horizontal",
+            command=self.tree.xview)
+        self.tree.configure(yscrollcommand=vsb.set,
+            xscrollcommand=hsb.set)
+        self.tree.grid(column=0, row=0, sticky='nsew', in_=container)
+        vsb.grid(column=1, row=0, sticky='ns', in_=container)
+        hsb.grid(column=0, row=1, sticky='ew', in_=container)
+        container.grid_columnconfigure(0, weight=1)
+        container.grid_rowconfigure(0, weight=1)
+        
+        
+    def _build_tree(self):
+        
+        for col in headers_list:
+            self.tree.heading(col, text=col.title(),
+                command=lambda c=col: sortby(self.tree, c, 0))
+            self.tree.column(col,
+                width=tkFont.Font().measure(col.title()))
+        
+        for item in values_list:
+            self.tree.insert('', 'end', values=item)
+            for ix, val in enumerate(item):
+                col_w = tkFont.Font().measure(val)
+                if self.tree.column(headers_list[ix],width=None)<col_w:
+                    self.tree.column(headers_list[ix], width=col_w)
+                    
+                    
+                    
+def sortby(tree, col, descending):
+
+    data = [(tree.set(child, col), child) \
+        for child in tree.get_children('')]
+    data.sort(reverse=descending)
+    for ix, item in enumerate(data):
+        tree.move(item[1], '', ix)
+    tree.heading(col, command=lambda col=col: sortby(tree, col, \
+        int(not descending)))
+
+"""" DATABASE """
+
+import sqlite3
+try:
+    connection = sqlite3.connect('DISEASE_PREDICTOR.db')
+    cursor = connection.cursor()
+    sqlite_select_query = "SELECT * FROM DISEASE_PREDICTOR"
+    cursor.execute(sqlite_select_query)
+    records = cursor.fetchall()
+    
+    for row in records:
+        values_list=records
+        
+    cursor.close()
+
+except sqlite3.Error as error:
+    print("Failed to read data from table", error)
+    
+finally:
+    if (connection):
+        connection.close()
+        
+  
+headers_list = ['REPORT Number','NAME','AGE','GENDER','SYMPTOM 1','SYMPTOM 2','SYMPTOM 3','SYMPTOM 4','SYMPTOM 5',
+                    'DECISION TREE PREDICTION','DECISION TREE ACCURACY','DECISION TREE TIME',
+                    'NAIVE BAYES PREDICTION','NAIVE BAYES ACCURACY','NAIVE BAYES TIME','KNN PREDICTION','KNN ACCURACY','KNN TIME']
+
+   
+root = tk.Tk()
+root.wm_title("MACHINE LEARNING DISEASE PREDICTOR.")
+mc_listbox = McListBox()
+root.mainloop()
+
+
+
+
+''''''''FUNCTION CALL
+
+def view_reports():
+    import subprocess
+
+    subprocess.check_output(
+    "View Reports.py", 
+    stderr=subprocess.STDOUT,
+    shell=True)
